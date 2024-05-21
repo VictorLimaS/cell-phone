@@ -2,11 +2,11 @@
 <h1 align="center">Buscar Contato</h1>
 
 <p align="center">
-    Criei e implmentei o Site do Spotify, visando na melhoria do meu conhecimnto com uma Api fake, onde podemos fazer busca em um pequeno banco de dados criado com JSON.<br />
+Esta é uma aplicação para teste de raciocínio lógico e lógica de programação, onde criei uma interface de discagem que simula um aparelho com números e letras abaixo deles. A ideia é buscar um contato na lista de contatos usando apenas a discagem para formar o nome ou o início do nome do contato desejado.<br />
     <br>
 
 <p align="center">
-    <img alt="projeto spotify" src="assets/img/readme.png" width="100%"
+    <img alt="projeto spotify" src="./src/assets/img/cell.png" width="100%"
 </p>
 
 ## 🛸 Tecnologias
@@ -14,6 +14,7 @@
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 - HTML e CSS <img align="center" alt="Victor" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg"> <img align="center" alt="Victor" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg">
+- Vue.js <img align="center" alt="Victor" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vuejs/vuejs-original.svg">
 - JavaScript <img align="center" alt="Victor" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-plain.svg">
 - Git e Github <img align="center" alt="Victor-Git" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg"> <img align="center" alt="Victor-GitHub" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg">
 
@@ -21,7 +22,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 
 
-- [Da uma olhada ai](https://spotify-seven-rho.vercel.app/)
+- [Da uma olhada ai](https://cell-phone-two.vercel.app/)
 
 
 
