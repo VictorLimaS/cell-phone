@@ -4,145 +4,134 @@
       <div class="point"></div>
     </div>
     <div class="screen">
-      <p class="text">{{ buttonText }}</p>
-      <p class="name" v-if="nameText">{{ nameText }}</p>
-      <p class="contact" v-if="contactName">{{ contactName }}</p>
-    </div>
-    <div class="contact-container" v-if="contactName">
-      <p class="contact">{{ contactName }}</p>
+      <p class="number">{{ clickedNumber }}</p>
+      <div class="list">
+        <ul>
+          <li v-for="contact in suggestedContacts" :key="contact.id">{{ contact.nome }}</li>
+        </ul>
+      </div>
     </div>
     <div class="button-container">
-      <div class="button-group">
-        <Button v-for="(item, index) in buttons" :key="index" :number="item.number" :letters="item.letters.join('')"
-          @click="updateText(item.number, item.letters)" />
+      <div class="button-row">
+        <Button number="1" letters="" @click="handleButtonClick('1')" />
+        <Button number="2" letters="ABC" @click="handleButtonClick('2')" />
+        <Button number="3" letters="DEF" @click="handleButtonClick('3')" />
       </div>
-      <div class="button-group">
-        <div class="button Trans"></div>
+      <div class="button-row">
+        <Button number="4" letters="GHI" @click="handleButtonClick('4')" />
+        <Button number="5" letters="JKL" @click="handleButtonClick('5')" />
+        <Button number="6" letters="MNO" @click="handleButtonClick('6')" />
+      </div>
+      <div class="button-row">
+        <Button number="7" letters="PQRS" @click="handleButtonClick('7')" />
+        <Button number="8" letters="TUV" @click="handleButtonClick('8')" />
+        <Button number="9" letters="WXYZ" @click="handleButtonClick('9')" />
+      </div>
+      <div class="button-row">
+        <Button number="*" letters="" @click="handleButtonClick('*')" />
+        <Button number="0" letters="+" @click="handleButtonClick('0')" />
+        <Button number="#" letters="" @click="handleButtonClick('#')" />
+      </div>
+      <div class="button-row">
+        <div class="tras"></div>
         <div class="button call" @click="toggleCallClick" :class="{ 'clicked': isCallClicked }">
           <ion-icon name="call-outline"></ion-icon>
         </div>
-        <div class="button Transs" @click="deleteLastDigit" v-show="buttonText.length > 0">
+        <div class="button trass" @click="handleBackspace">
           <ion-icon name="backspace-outline"></ion-icon>
         </div>
       </div>
-    </div>
+    </div>  
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
 import Button from './Button.vue';
-import buttonsData from '../json/buttons.json';
 import contatosData from '../json/contatos.json';
 
 export default {
   components: {
     Button,
   },
-  setup() {
-    const buttonText = ref('');
-    const nameText = ref('');
-    const contactName = ref('');
-    let lastButtonClickTime = 0;
-    let lastNumberClicked = null;
-    const letterChangeDelay = 1000;
-
-    const buttons = buttonsData;
-    const contatos = contatosData;
-
-    const selectedLetters = ref([]);
-    const isCallClicked = ref(false);
-
-    const toggleCallClick = () => {
-      isCallClicked.value = !isCallClicked.value;
-    };
-
-    const updateText = (number, letters) => {
-      const currentTime = new Date().getTime();
-
-      if (number === 1 || number === '*' || number === '#') {
-        if (lastNumberClicked !== number || currentTime - lastButtonClickTime > letterChangeDelay) {
-          buttonText.value += number.toString();
-          lastButtonClickTime = currentTime;
-          lastNumberClicked = number;
-        }
-        return;
-      }
-
-      if (lastNumberClicked === number && currentTime - lastButtonClickTime <= letterChangeDelay) {
-        const currentLetterIndex = selectedLetters.value.findIndex(item => item.number === number);
-        if (currentLetterIndex !== -1) {
-          let nextLetterIndex = (selectedLetters.value[currentLetterIndex].index + 1) % letters.length;
-          selectedLetters.value[currentLetterIndex].index = nextLetterIndex;
-          const nextLetter = letters[nextLetterIndex];
-          nameText.value = nameText.value.slice(0, -1) + nextLetter;
-        } else {
-          selectedLetters.value.push({ number, index: 0 });
-          nameText.value += letters[0];
-        }
-      } else {
-        selectedLetters.value = [{ number, index: 0 }];
-        buttonText.value += number.toString();
-        nameText.value += letters[0];
-      }
-      lastButtonClickTime = currentTime;
-      lastNumberClicked = number;
-
-      const filteredContacts = contatos.filter(contato =>
-        contato.nome.toLowerCase().startsWith(nameText.value.toLowerCase())
-      );
-      contactName.value = filteredContacts.length > 0 ? filteredContacts[0].nome : '';
-    };
-
-    const deleteLastDigit = () => {
-      if (buttonText.value.length > 0) {
-        const lastButton = buttons.find(btn => btn.number.toString() === buttonText.value.slice(-1));
-        if (lastButton) {
-          const number = lastButton.number;
-          const index = selectedLetters.value.findIndex(item => item.number === number);
-          if (index !== -1) {
-            selectedLetters.value.splice(index, 1);
-          }
-        }
-        buttonText.value = buttonText.value.slice(0, -1);
-
-        if (buttonText.value.length === 0) {
-          nameText.value = '';
-          contactName.value = '';
-        } else {
-          nameText.value = nameText.value.slice(0, -1);
-          const selectedNumbers = selectedLetters.value.map(item => item.number);
-          nameText.value += selectedNumbers.map(number => {
-            const button = buttons.find(btn => btn.number === number);
-            return button.letters[selectedLetters.value.find(item => item.number === number).index];
-          }).join('');
-        }
-      }
-    };
-
+  data() {
     return {
-      buttonText,
-      nameText,
-      contactName,
-      buttons,
-      updateText,
-      deleteLastDigit,
-      isCallClicked,
-      toggleCallClick,
+      clickedNumber: '',
     };
   },
-};
+  computed: {
+    suggestedContacts() {
+      const contacts = [];
+      const numberToLetters = {
+        '2': ['A', 'B', 'C'],
+        '3': ['D', 'E', 'F'],
+        '4': ['G', 'H', 'I'],
+        '5': ['J', 'K', 'L'],
+        '6': ['M', 'N', 'O'],
+        '7': ['P', 'Q', 'R', 'S'],
+        '8': ['T', 'U', 'V'],
+        '9': ['W', 'X', 'Y', 'Z'],
+      };
+
+      const combinations = this.generateLetterCombinations(this.clickedNumber, numberToLetters);
+      combinations.forEach(combination => {
+        const matchedContacts = contatosData.filter(contact => contact.nome.toLowerCase().includes(combination.toLowerCase()));
+        contacts.push(...matchedContacts);
+      });
+
+      return contacts;
+    }
+  },
+  methods: {
+    handleButtonClick(number) {
+      const lastChar = this.clickedNumber.charAt(this.clickedNumber.length - 1);
+
+      if (lastChar !== number) {
+        this.clickedNumber += number;
+      } else {
+        this.clickedNumber = this.clickedNumber.slice(0, -1) + number;
+      }
+    },
+
+    handleBackspace() {
+      this.clickedNumber = this.clickedNumber.slice(0, -1);
+    },
+
+    generateLetterCombinations(number, numberToLetters) {
+      const result = [];
+      if (number.length === 0) {
+        return result;
+      }
+
+      const dfs = (index, currentCombination) => {
+        if (index === number.length) {
+          result.push(currentCombination);
+          return;
+        }
+
+        const letters = numberToLetters[number[index]];
+        for (const letter of letters) {
+          dfs(index + 1, currentCombination + letter);
+        }
+      };
+
+      dfs(0, '');
+      return result;
+    }
+  }
+}
 </script>
 
 <style scoped>
 .iphone {
+  border-radius: 2.5rem;
   position: relative;
   width: 375px;
-  height: 667px;
+  height: 637px;
   background: #000000;
   border-radius: 40px;
   overflow: hidden;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+
 }
 
 .notch {
@@ -167,53 +156,52 @@ export default {
   background-color: rgb(25, 25, 68);
 }
 
-.device {
-  position: relative;
-  padding: 20px;
-}
-
 .screen {
-  position: absolute;
-  margin-top: 3rem;
-  width: 100%;
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  height: 160px;
+  color: white;
+  margin-top: 3rem;
 }
 
-.text {
+.screen .number {
+  font-size: 3rem;
+}
+
+.screen .letter {
+  padding: none;
+  font-size: 1.5rem;
+}
+
+.screen .list {
+  font-size: 12px;
+  font-size: .6rem;
+  overflow: hidden;
+}
+
+
+.screen .list ul li {
+  list-style-type: none;
   text-align: center;
-  margin-top: 20px;
-  font-size: 60px;
-  flex: 1;
-}
-
-.screen p {
-  margin: 0;
 }
 
 .button-container {
-  position: absolute;
-  top: 180px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  gap: .2rem;
 }
 
-.button-group {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 1rem;
-  gap: 10px;
+.button-row {
+  display: flex;
+  gap: .2rem;
 }
 
-.button {
+.call {
   width: 80px;
   height: 80px;
-  background: #0e0e0e;
+  background: #00ff26;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -225,31 +213,31 @@ export default {
   transition: background-color 0.1ms ease;
 }
 
-.button:active {
-  background: #565656;
+.trass {
+  width: 80px;
+  height: 80px;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 84px;
+  flex-direction: column;
+  transition: background-color 0.1ms ease;
 }
 
-.Trans {
-  z-index: -100;
-  cursor: none;
-  background-color: transparent;
-}
-
-.Transs {
-  background-color: transparent !important;
-  color: #565656;
-}
-
-.Transs:active {
-  color: #ffffff;
-}
-
-.call {
-  background-color: #27ae60;
-}
-
-.call.clicked {
-  background-color: #f90000; 
+.tras {
+  width: 80px;
+  height: 80px;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 84px;
+  flex-direction: column;
+  transition: background-color 0.1ms ease;
 }
 
 ion-icon {
