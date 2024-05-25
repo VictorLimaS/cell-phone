@@ -26,4 +26,8 @@ body {
   overflow: hidden;
 }
 
+#app {
+  padding: 0;
+}
+
 </style>

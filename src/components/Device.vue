@@ -37,11 +37,11 @@
         <div class="button call" @click="toggleCallClick" :class="{ 'clicked': isCallClicked }">
           <ion-icon name="call-outline"></ion-icon>
         </div>
-        <div class="button trass" @click="handleBackspace">
+        <div class="button trass" @click="handleBackspace" >
           <ion-icon name="backspace-outline"></ion-icon>
         </div>
       </div>
-    </div>  
+    </div>
   </div>
 </template>
 
@@ -243,5 +243,19 @@ export default {
 ion-icon {
   font-size: 3rem;
   cursor: pointer;
+}
+
+@media screen and (max-width: 500px) {
+  .iphone {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+  }
+
 }
 </style>
